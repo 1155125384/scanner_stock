@@ -601,13 +601,13 @@ def analyze_ticker(ticker, cfg, bench_rets, rating_scores):
     analyst_weighted_score = analyst_data.get("total_mark", np.nan)
     final_score = round(analyst_weighted_score * 0.6 + technical_score * 0.4, 2)
 
-    if final_score >= 80:
+    if final_score >= 75:
         rating = "Strong hold"
     elif final_score >= 60:
         rating = "Hold"
-    elif final_score >= 40:
+    elif final_score >= 50:
         rating = "Neutral"
-    elif final_score >= 20:
+    elif final_score >= 40:
         rating = "Sell"
     else:
         rating = "Strong sell"
