@@ -390,7 +390,7 @@ for threshold in thresholds:
     above_threshold_df = ratings_df_filtered[ratings_df_filtered["total_mark"] >= threshold]
     final_ratings_df = pd.concat([above_threshold_df, held_df]).drop_duplicates().reset_index(drop=True)
     
-    if len(final_ratings_df) >= 10:
+    if len(final_ratings_df) >= 50:
         break
 
 print(
