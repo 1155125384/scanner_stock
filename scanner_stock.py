@@ -102,7 +102,7 @@ CONFIG = {
         "rating_baseline_score": 50.0,
         "rating_levels": [75, 60, 50, 40],
         "rating_thresholds": [85.0, 83.0, 80.0, 78.0, 75.0],
-        "minimum_final_ratings": 50,
+        "minimum_final_ratings": 250,
     },
     "output": {"stock_csv": "stock_scanner.csv", "display_width": 220},
     "index_sources": [
