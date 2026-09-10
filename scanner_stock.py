@@ -5,7 +5,7 @@ import json
 import os
 import uuid
 import urllib.parse
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from webullsdkcore.client import ApiClient
 from webullsdktrade.api import API
 from webullsdkcore.common.region import Region
@@ -22,11 +22,108 @@ import numpy as np
 import pandas as pd
 import logging
 
-APP_KEY = os.getenv('APP_KEY')
-APP_SECRET = os.getenv('APP_SECRET')
-HOST = "api.webull.hk" 
-BASE_URL = f"https://{HOST}"
-ACCESS_TOKEN = os.getenv("WEBULL_ACCESS_TOKEN", "").strip()
+# =============================================================================
+# Configuration
+# =============================================================================
+# Edit values in this section to change credentials, API behavior, scan rules,
+# progress output, or the technical scoring model. Account credentials are used
+# only by the trading SDK to read holdings. Sandbox credentials are used for
+# token creation and market-data requests.
+CONFIG = {
+    "webull": {
+        "sandbox_app_key": "42bd186fb65ea76de309d69cf12f024e",
+        "sandbox_app_secret": "29feb64b59d6b1b6b2d2aa8cea8a1b8d",
+        # "sandbox_app_key": os.getenv("SANDBOX_KEY"),
+        # "sandbox_app_secret": os.getenv("SANDBOX_SECRET"),
+        "sandbox_host": "api.sandbox.webull.hk",
+        "account_app_key": os.getenv("APP_KEY"),
+        "account_app_secret": os.getenv("APP_SECRET"),
+        "region": Region.HK.value,
+        "token_endpoint": "/auth/tokens/create",
+        "ratings_endpoint": "/market-data/fundamentals/analysis/ratings/get",
+        "ratings_category": "US_STOCK",
+        "api_version": "v2",
+        "token_api_version": "v2",
+        "signature_algorithm": "HMAC-SHA1",
+        "signature_version": "1.0",
+        "account_page_size": 100,
+    },
+    "progress": {
+        "update_interval_seconds": 1.0,
+        "poll_interval_seconds": 0.1,
+        "bar_length": 30,
+        "line_width": 160,
+    },
+    "ratings": {
+        "request_delay_seconds": 0.1,
+        "retry_wait_seconds": 10,
+        "max_retries": 5,
+        "retry_backoff_base_seconds": 2,
+        "retry_backoff_max_seconds": 60,
+        "rate_limit_status_code": 429,
+        "freshness_days": 3,
+        "weights": {
+            "strong_buy": 100.0, "buy": 75.0, "hold": 50.0,
+            "under_perform": 25.0, "sell": 0.0,
+        },
+    },
+    "screen": {
+        "timeframe": "hourly",
+        "holdings_metadata_delay_seconds": 0.3,
+        "auto_adjust_prices": True,
+        "request_delay_seconds": 1.5,
+        "max_retries": 3,
+        "retry_backoff_seconds": 5,
+        "analyst_weight": 0.6,
+        "technical_weight": 0.4,
+        "annualized_trading_days": 252,
+        "annualized_bars_per_day": 6.5,
+        "macd": {"fast": 12, "slow": 26, "signal": 9},
+        "rsi": {"ideal": 55, "overbought": 70, "oversold": 30, "distance": 45},
+        "score_ranges": {
+            "trend": (-10, 10), "volume": (0.5, 2.5),
+            "price_momentum": (-40, 40), "relative_strength": (-20, 20),
+            "risk_volatility": (15, 80), "risk_drawdown": (0, 50),
+        },
+        "benchmarks": {"SPY": "SPY", "DJI": "^DJI", "SPX": "^GSPC", "IXIC": "^IXIC"},
+        "timeframes": {
+            "hourly": {
+                "interval": "1h", "period": "730d", "ma_short": 50,
+                "ma_long": 200, "rsi_period": 14, "vol_recent_bars": 7,
+                "vol_baseline_bars": 130, "mom_windows": {"1D%": 7, "1W%": 33, "1M%": 140},
+                "bench_bars": 33,
+            },
+        },
+        "score_weights": {
+            "trend": 20, "momentum": 10, "price_momentum": 15,
+            "volume": 20, "relative_strength": 20, "risk_adjustment": 15,
+        },
+        "rating_baseline_weight": 10,
+        "rating_baseline_score": 50.0,
+        "rating_levels": [75, 60, 50, 40],
+        "rating_thresholds": [85.0, 83.0, 80.0, 78.0, 75.0],
+        "minimum_final_ratings": 50,
+    },
+    "output": {"stock_csv": "stock_scanner.csv", "display_width": 220},
+    "index_sources": [
+        ("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies", "S&P 500"),
+        ("https://en.wikipedia.org/wiki/List_of_S%26P_400_companies", "S&P MidCap 400"),
+        ("https://en.wikipedia.org/wiki/List_of_S%26P_600_companies", "S&P SmallCap 600"),
+    ],
+}
+
+WEBULL_CONFIG = CONFIG["webull"]
+PROGRESS_CONFIG = CONFIG["progress"]
+RATINGS_CONFIG = CONFIG["ratings"]
+SCREEN_CONFIG = CONFIG["screen"]
+OUTPUT_CONFIG = CONFIG["output"]
+
+SANDBOX_APP_KEY = WEBULL_CONFIG["sandbox_app_key"]
+SANDBOX_APP_SECRET = WEBULL_CONFIG["sandbox_app_secret"]
+SANDBOX_HOST = WEBULL_CONFIG["sandbox_host"]
+ACCOUNT_APP_KEY = WEBULL_CONFIG["account_app_key"]
+ACCOUNT_APP_SECRET = WEBULL_CONFIG["account_app_secret"]
+SANDBOX_BASE_URL = f"https://{SANDBOX_HOST}"
 
 
 def generate_signature(path, query_params, body_string, app_key, app_secret, host, timestamp, nonce):
@@ -58,7 +155,19 @@ def generate_signature(path, query_params, body_string, app_key, app_secret, hos
     return signature
 
 
-def call_api(method, path, query_params=None, body=None, access_token=None):
+def call_api(
+    method,
+    path,
+    query_params=None,
+    body=None,
+    access_token=None,
+    app_key=SANDBOX_APP_KEY,
+    app_secret=SANDBOX_APP_SECRET,
+    host=SANDBOX_HOST,
+    base_url=SANDBOX_BASE_URL,
+    api_version=None,
+):
+    """Sign and send a Webull REST request with the selected credentials."""
     query_params = query_params or {}
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     nonce = uuid.uuid4().hex
@@ -67,27 +176,25 @@ def call_api(method, path, query_params=None, body=None, access_token=None):
 
     signature = generate_signature(
         path, query_params, body_string,
-        APP_KEY, APP_SECRET, HOST, timestamp, nonce,
+        app_key, app_secret, host, timestamp, nonce,
     )
 
     headers = {
         "Accept": "application/json",
-        "x-app-key": APP_KEY,
+        "x-app-key": app_key,
         "x-timestamp": timestamp,
         "x-signature": signature,
-        "x-signature-algorithm": "HMAC-SHA1",
-        "x-signature-version": "1.0",
+        "x-signature-algorithm": WEBULL_CONFIG["signature_algorithm"],
+        "x-signature-version": WEBULL_CONFIG["signature_version"],
         "x-signature-nonce": nonce,
-        "x-version": "v2",
+        "x-version": api_version or WEBULL_CONFIG["api_version"],
     }
     if access_token is not None:
         if not access_token:
-            raise ValueError(
-                "WEBULL_ACCESS_TOKEN is not set. Set it in the environment and rerun this cell."
-            )
+            raise ValueError("Webull access token is empty; create a token before this request.")
         headers["x-access-token"] = access_token
 
-    url = f"{BASE_URL}{path}"
+    url = f"{base_url}{path}"
 
     if method.upper() == "GET":
         resp = requests.get(url, headers=headers, params=query_params)
@@ -97,27 +204,52 @@ def call_api(method, path, query_params=None, body=None, access_token=None):
 
     return resp
 
-token_response = call_api("POST", "/auth/tokens/create")
 
-try:
-    token_data = token_response.json()
-except ValueError:
-    token_data = None
+def create_access_token():
+    """Create a fresh short-lived token with sandbox credentials on every run."""
+    if not SANDBOX_APP_KEY or not SANDBOX_APP_SECRET:
+        raise RuntimeError("SANDBOX_KEY and SANDBOX_SECRET must be configured.")
 
-if token_response.ok and isinstance(token_data, dict):
-    ACCESS_TOKEN = (
+    response = call_api(
+        "POST",
+        WEBULL_CONFIG["token_endpoint"],
+        body={},
+        app_key=SANDBOX_APP_KEY,
+        app_secret=SANDBOX_APP_SECRET,
+        host=SANDBOX_HOST,
+        base_url=SANDBOX_BASE_URL,
+        api_version=WEBULL_CONFIG["token_api_version"],
+    )
+    try:
+        token_data = response.json()
+    except ValueError:
+        token_data = None
+
+    if not response.ok or not isinstance(token_data, dict):
+        raise RuntimeError(
+            f"Unable to create Webull access token: HTTP {response.status_code} "
+            f"{response.text[:500]}"
+        )
+
+    token = (
         token_data.get("access_token")
         or token_data.get("accessToken")
         or token_data.get("token")
     )
-    if not ACCESS_TOKEN:
-        raise KeyError(f"Token field not found in response: {token_data}")
-    print("Access token created successfully.")
-else:
-    print(token_response.text)
+    if not token:
+        raise RuntimeError(f"Token field not found in response: {token_data}")
+    return token
 
 
-api_client = ApiClient(APP_KEY, APP_SECRET, Region.HK.value)
+# A new token is deliberately generated for every execution because it expires quickly.
+ACCESS_TOKEN = create_access_token()
+print("Access token created successfully.")
+
+
+# The account app credentials are isolated to the SDK call that reads holdings.
+if not ACCOUNT_APP_KEY or not ACCOUNT_APP_SECRET:
+    raise RuntimeError("APP_KEY and APP_SECRET must be configured for account holdings.")
+api_client = ApiClient(ACCOUNT_APP_KEY, ACCOUNT_APP_SECRET, WEBULL_CONFIG["region"])
 api = API(api_client)
 
 res_acct = api.account.get_app_subscriptions()
@@ -126,7 +258,9 @@ account_id = None
 result = res_acct.json()
 account_id = result[0]['account_id']
 
-res_stock = api.account.get_account_position(account_id,page_size=100)
+res_stock = api.account.get_account_position(
+    account_id, page_size=WEBULL_CONFIG["account_page_size"]
+)
 account_position = res_stock.json()
 
 holdings = account_position.get("holdings", [])
@@ -138,7 +272,14 @@ holdings = current_holdings_list
 
 results = []
 
-for ticker in tqdm(holdings, desc="Fetching ticker data", unit="ticker"):
+for ticker in tqdm(
+    holdings,
+    desc="Fetching ticker data",
+    unit="ticker",
+    mininterval=PROGRESS_CONFIG["update_interval_seconds"],
+    miniters=1,
+    leave=False,
+):
     try:
         info = yf.Ticker(ticker).info
         quote_type = info.get('quoteType', 'UNKNOWN')
@@ -146,7 +287,7 @@ for ticker in tqdm(holdings, desc="Fetching ticker data", unit="ticker"):
         results.append({'Ticker': ticker, 'Type': quote_type, 'Name': long_name})
     except Exception as e:
         results.append({'Ticker': ticker, 'Type': 'ERROR', 'Name': str(e)})
-    time.sleep(0.3)
+    time.sleep(SCREEN_CONFIG["holdings_metadata_delay_seconds"])
 
 df = pd.DataFrame(results)
 
@@ -206,18 +347,7 @@ def fetch_sp_index(url: str, index_label: str) -> pd.DataFrame:
   return df
 
 sp_sources = [
-    (
-        "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",
-        "S&P 500",
-    ),
-    (
-        "https://en.wikipedia.org/wiki/List_of_S%26P_400_companies",
-        "S&P MidCap 400",
-    ),
-    (
-        "https://en.wikipedia.org/wiki/List_of_S%26P_600_companies",
-        "S&P SmallCap 600",
-    ),
+    *CONFIG["index_sources"],
 ]
 
 sp_composite_df = pd.concat(
@@ -231,18 +361,27 @@ tickers = list(dict.fromkeys(list(tickers) + current_stock_holdings))
 
 rating_rows = []
 rating_errors = []
-request_delay_seconds = 0.1
-retry_wait_seconds = 10
-max_retries = 5
+request_delay_seconds = RATINGS_CONFIG["request_delay_seconds"]
+retry_wait_seconds = RATINGS_CONFIG["retry_wait_seconds"]
+max_retries = RATINGS_CONFIG["max_retries"]
 total_symbols = len(tickers)
 started_at = time.time()
+last_progress_update = 0.0
 
 
 def show_progress(completed, current_symbol, state="requesting"):
+    global last_progress_update
+    now = time.time()
+    if (
+        completed != total_symbols
+        and now - last_progress_update < PROGRESS_CONFIG["update_interval_seconds"]
+    ):
+        return
+    last_progress_update = now
     elapsed = time.time() - started_at
     rate = completed / elapsed if elapsed > 0 and completed else 0
     remaining = (total_symbols - completed) / rate if rate > 0 else 0
-    bar_length = 30
+    bar_length = PROGRESS_CONFIG["bar_length"]
     filled = int(bar_length * completed / total_symbols) if total_symbols else 0
     progress_bar = "#" * filled + "-" * (bar_length - filled)
     eta = f"ETA {remaining / 60:.1f} min" if rate else "ETA calculating"
@@ -252,18 +391,20 @@ def show_progress(completed, current_symbol, state="requesting"):
         f"{current_symbol:<6} | OK {len(rating_rows):>3} | "
         f"Failed {len(rating_errors):>3} | {eta}"
     )
-    sys.stdout.write(message[:160].ljust(160))
+    line_width = PROGRESS_CONFIG["line_width"]
+    sys.stdout.write(message[:line_width].ljust(line_width))
     sys.stdout.flush()
 
 
 def wait_with_progress(seconds, completed, symbol, reason):
+    """Wait without flooding the terminal; progress is refreshed at most once per second."""
     end_time = time.time() + seconds
     while True:
         seconds_left = max(0, int(end_time - time.time() + 0.999))
         show_progress(completed, symbol, f"{reason}, wait {seconds_left}s")
         if seconds_left == 0:
             break
-        time.sleep(min(0.1, seconds_left))
+        time.sleep(min(PROGRESS_CONFIG["poll_interval_seconds"], seconds_left))
 
 
 print(f"Starting ratings download for {total_symbols} symbols at {datetime.now():%H:%M:%S}")
@@ -275,15 +416,15 @@ for completed, symbol in enumerate(tickers, start=1):
         try:
             rating_response = call_api(
                 "GET",
-                "/market-data/fundamentals/analysis/ratings/get",
+                WEBULL_CONFIG["ratings_endpoint"],
                 query_params={
                     "symbol": symbol,
-                    "category": "US_STOCK",
+                    "category": WEBULL_CONFIG["ratings_category"],
                 },
                 access_token=ACCESS_TOKEN,
             )
 
-            if rating_response.status_code == 429:
+            if rating_response.status_code == RATINGS_CONFIG["rate_limit_status_code"]:
                 if attempt == max_retries:
                     raise requests.HTTPError("Rate limit remained active after retries")
 
@@ -312,7 +453,15 @@ for completed, symbol in enumerate(tickers, start=1):
             if attempt == max_retries:
                 rating_errors.append({"symbol": symbol, "error": str(error)})
                 break
-            wait_with_progress(min(60, 2 ** attempt * 2), completed - 1, symbol, "retrying")
+            wait_with_progress(
+                min(
+                    RATINGS_CONFIG["retry_backoff_max_seconds"],
+                    2 ** attempt * RATINGS_CONFIG["retry_backoff_base_seconds"],
+                ),
+                completed - 1,
+                symbol,
+                "retrying",
+            )
 
     wait_with_progress(request_delay_seconds, completed, symbol, "throttling")
     show_progress(completed, symbol, "completed")
@@ -348,23 +497,18 @@ ratings_df["effective_start_date"] = pd.to_datetime(
     ratings_df["effective_start_date"], utc=True
 )
 
-cutoff_time = pd.Timestamp.now(tz="UTC") - pd.Timedelta(days=3)
+cutoff_time = pd.Timestamp.now(tz="UTC") - pd.Timedelta(
+    days=RATINGS_CONFIG["freshness_days"]
+)
 
 ratings_df_filtered = ratings_df[
     (ratings_df["effective_start_date"] >= cutoff_time) |
     (ratings_df["symbol"].isin(current_stock_holdings))
 ].reset_index(drop=True)
 
-weights = {
-    "strong_buy": 100.0,
-    "buy": 75.0,
-    "hold": 50.0,
-    "under_perform": 25.0,
-    "sell": 0.0,
-}
-
-m = 10  # Weight given to neutral baseline (penalizes low n)
-C = 50.0  # Baseline score (50 = Neutral/Hold)
+weights = RATINGS_CONFIG["weights"]
+m = SCREEN_CONFIG["rating_baseline_weight"]
+C = SCREEN_CONFIG["rating_baseline_score"]
 
 ratings_df_filtered["raw_score"] = (
     sum(ratings_df_filtered[col] * weight for col, weight in weights.items())
@@ -381,7 +525,7 @@ ratings_df_filtered = ratings_df_filtered.sort_values(
     ascending=[False, False]
 ).reset_index(drop=True)
 
-thresholds = [85.0, 83.0, 80.0, 78.0, 75.0]
+thresholds = SCREEN_CONFIG["rating_thresholds"]
 
 held_mask = ratings_df_filtered["symbol"].isin(current_stock_holdings)
 held_df = ratings_df_filtered[held_mask]
@@ -390,7 +534,7 @@ for threshold in thresholds:
     above_threshold_df = ratings_df_filtered[ratings_df_filtered["total_mark"] >= threshold]
     final_ratings_df = pd.concat([above_threshold_df, held_df]).drop_duplicates().reset_index(drop=True)
     
-    if len(final_ratings_df) >= 50:
+    if len(final_ratings_df) >= SCREEN_CONFIG["minimum_final_ratings"]:
         break
 
 print(
@@ -402,51 +546,25 @@ print(
 logging.getLogger("yfinance").setLevel(logging.CRITICAL)
 
 # ----------------------------------------------------------------------------
-# 1. CONFIG
+# 1. Prepare the technical screen from the analyst-rated symbols.
 # ----------------------------------------------------------------------------
 TICKERS = final_ratings_df["symbol"].tolist()
 RATING_SCORES = final_ratings_df.set_index("symbol")[
     ["raw_score", "total_mark", "number", "strong_buy", "buy", "hold", "sell", "under_perform"]
 ].to_dict("index")
 
-BENCHMARKS = {
-    "SPY": "SPY",       # S&P 500 ETF proxy
-    "DJI": "^DJI",      # Dow Jones Industrial Average
-    "SPX": "^GSPC",     # S&P 500 index (Yahoo symbol is ^GSPC)
-    "IXIC": "^IXIC",    # Nasdaq Composite
-}
-TIMEFRAME = "hourly"
-REQUEST_DELAY_SEC = 1.5
-MAX_RETRIES = 3
-RETRY_BACKOFF_SEC = 5
-
-TIMEFRAME_CONFIG = {
-    "hourly": {
-        "interval": "1h",
-        "period": "730d",
-        "ma_short": 50,
-        "ma_long": 200,
-        "rsi_period": 14,
-        "vol_recent_bars": 7,
-        "vol_baseline_bars": 130,
-        "mom_windows": {"1D%": 7, "1W%": 33, "1M%": 140},
-        "bench_bars": 33,
-    },
-}
-
-SCORE_WEIGHTS = {
-    "trend": 20,              # price vs 50/200 MA
-    "momentum": 10,           # RSI + MACD -- most redundant with trend, cut hardest
-    "price_momentum": 15,     # raw 1D/1W/1M returns -- distinct horizons, keeps some weight
-    "volume": 20,             # independent signal -- upweighted
-    "relative_strength": 20,  # independent (vs benchmark basket) -- upweighted
-    "risk_adjustment": 15,    # NEW: rewards low AnnVol%/MaxDD% instead of ignoring them
-}
+BENCHMARKS = SCREEN_CONFIG["benchmarks"]
+TIMEFRAME = SCREEN_CONFIG["timeframe"]
+REQUEST_DELAY_SEC = SCREEN_CONFIG["request_delay_seconds"]
+MAX_RETRIES = SCREEN_CONFIG["max_retries"]
+RETRY_BACKOFF_SEC = SCREEN_CONFIG["retry_backoff_seconds"]
+TIMEFRAME_CONFIG = SCREEN_CONFIG["timeframes"]
+SCORE_WEIGHTS = SCREEN_CONFIG["score_weights"]
 assert sum(SCORE_WEIGHTS.values()) == 100
 
 
 # ----------------------------------------------------------------------------
-# 2. INDICATOR HELPERS
+# 2. Indicator helpers used by the technical scoring model.
 # ----------------------------------------------------------------------------
 def rsi(series, period):
     delta = series.diff()
@@ -458,7 +576,11 @@ def rsi(series, period):
     return 100 - (100 / (1 + rs))
 
 
-def macd(series, fast=12, slow=26, signal=9):
+def macd(series, fast=None, slow=None, signal=None):
+    settings = SCREEN_CONFIG["macd"]
+    fast = fast or settings["fast"]
+    slow = slow or settings["slow"]
+    signal = signal or settings["signal"]
     ema_fast = series.ewm(span=fast, adjust=False).mean()
     ema_slow = series.ewm(span=slow, adjust=False).mean()
     macd_line = ema_fast - ema_slow
@@ -493,7 +615,7 @@ def inverse_clip_scale(value, lo, hi, out_max):
 
 
 # ----------------------------------------------------------------------------
-# 3. ROBUST DOWNLOAD
+# 3. Download market history with retries for transient Yahoo Finance errors.
 # ----------------------------------------------------------------------------
 def safe_download(ticker, interval, period):
     last_err = None
@@ -502,7 +624,7 @@ def safe_download(ticker, interval, period):
             hist = yf.Ticker(ticker).history(
                 period=period,
                 interval=interval,
-                auto_adjust=True,
+                auto_adjust=SCREEN_CONFIG["auto_adjust_prices"],
             )
             if not hist.empty and "Close" in hist.columns:
                 return hist
@@ -521,7 +643,7 @@ def safe_download(ticker, interval, period):
 
 
 # ----------------------------------------------------------------------------
-# 4. PER-TICKER ANALYSIS
+# 4. Calculate indicators, scores, and human-readable signal flags per ticker.
 # ----------------------------------------------------------------------------
 def analyze_ticker(ticker, cfg, bench_rets, rating_scores):
     hist = safe_download(ticker, cfg["interval"], cfg["period"])
@@ -553,7 +675,14 @@ def analyze_ticker(ticker, cfg, bench_rets, rating_scores):
                    for label, bars in cfg["mom_windows"].items()}
 
     daily_ret = close.pct_change().dropna()
-    ann_vol = float(daily_ret.std() * np.sqrt(252 * 6.5) * 100)
+    ann_vol = float(
+        daily_ret.std()
+        * np.sqrt(
+            SCREEN_CONFIG["annualized_trading_days"]
+            * SCREEN_CONFIG["annualized_bars_per_day"]
+        )
+        * 100
+    )
     dd = max_drawdown(close)
 
     primary_ret = pct_change_over(close, cfg["bench_bars"])
@@ -573,24 +702,46 @@ def analyze_ticker(ticker, cfg, bench_rets, rating_scores):
     vs_short_pct = (price / ma_short - 1) * 100 if ma_short else np.nan
     vs_long_pct = (price / ma_long - 1) * 100 if not np.isnan(ma_long) else np.nan
 
-    score_short = clip_scale(vs_short_pct, -10, 10, SCORE_WEIGHTS["trend"] / 2)
-    score_long = (clip_scale(vs_long_pct, -10, 10, SCORE_WEIGHTS["trend"] / 2)
+    trend_range = SCREEN_CONFIG["score_ranges"]["trend"]
+    score_short = clip_scale(vs_short_pct, *trend_range, SCORE_WEIGHTS["trend"] / 2)
+    score_long = (clip_scale(vs_long_pct, *trend_range, SCORE_WEIGHTS["trend"] / 2)
                   if not np.isnan(vs_long_pct) else 0.0)
     trend_score = score_short + score_long
 
-    score_rsi = SCORE_WEIGHTS["momentum"] / 2 * max(0, 1 - abs(r - 55) / 45)
+    rsi_settings = SCREEN_CONFIG["rsi"]
+    score_rsi = SCORE_WEIGHTS["momentum"] / 2 * max(
+        0, 1 - abs(r - rsi_settings["ideal"]) / rsi_settings["distance"]
+    )
     score_macd = SCORE_WEIGHTS["momentum"] / 2 if macd_bullish else 0
     momentum_score = score_rsi + score_macd
 
-    volume_score = clip_scale(vol_ratio, 0.5, 2.5, SCORE_WEIGHTS["volume"])
+    volume_score = clip_scale(
+        vol_ratio, *SCREEN_CONFIG["score_ranges"]["volume"], SCORE_WEIGHTS["volume"]
+    )
 
     valid_mom = [v for v in mom_returns.values() if not np.isnan(v)]
     avg_mom = float(np.mean(valid_mom)) if valid_mom else np.nan
-    price_momentum_score = clip_scale(avg_mom, -40, 40, SCORE_WEIGHTS["price_momentum"])
+    price_momentum_score = clip_scale(
+        avg_mom,
+        *SCREEN_CONFIG["score_ranges"]["price_momentum"],
+        SCORE_WEIGHTS["price_momentum"],
+    )
 
-    rel_strength_score = clip_scale(rel_strength, -20, 20, SCORE_WEIGHTS["relative_strength"])
-    risk_vol_score = inverse_clip_scale(ann_vol, 15, 80, SCORE_WEIGHTS["risk_adjustment"] / 2)
-    risk_dd_score = inverse_clip_scale(abs(dd), 0, 50, SCORE_WEIGHTS["risk_adjustment"] / 2)
+    rel_strength_score = clip_scale(
+        rel_strength,
+        *SCREEN_CONFIG["score_ranges"]["relative_strength"],
+        SCORE_WEIGHTS["relative_strength"],
+    )
+    risk_vol_score = inverse_clip_scale(
+        ann_vol,
+        *SCREEN_CONFIG["score_ranges"]["risk_volatility"],
+        SCORE_WEIGHTS["risk_adjustment"] / 2,
+    )
+    risk_dd_score = inverse_clip_scale(
+        abs(dd),
+        *SCREEN_CONFIG["score_ranges"]["risk_drawdown"],
+        SCORE_WEIGHTS["risk_adjustment"] / 2,
+    )
     risk_score = risk_vol_score + risk_dd_score
 
     total_score = round(trend_score + momentum_score + volume_score
@@ -599,15 +750,20 @@ def analyze_ticker(ticker, cfg, bench_rets, rating_scores):
 
     analyst_data = rating_scores.get(ticker, {})
     analyst_weighted_score = analyst_data.get("total_mark", np.nan)
-    final_score = round(analyst_weighted_score * 0.6 + technical_score * 0.4, 2)
+    final_score = round(
+        analyst_weighted_score * SCREEN_CONFIG["analyst_weight"]
+        + technical_score * SCREEN_CONFIG["technical_weight"],
+        2,
+    )
 
-    if final_score >= 75:
+    rating_levels = SCREEN_CONFIG["rating_levels"]
+    if final_score >= rating_levels[0]:
         rating = "Strong hold"
-    elif final_score >= 60:
+    elif final_score >= rating_levels[1]:
         rating = "Hold"
-    elif final_score >= 50:
+    elif final_score >= rating_levels[2]:
         rating = "Neutral"
-    elif final_score >= 40:
+    elif final_score >= rating_levels[3]:
         rating = "Sell"
     else:
         rating = "Strong sell"
@@ -617,9 +773,9 @@ def analyze_ticker(ticker, cfg, bench_rets, rating_scores):
         flags.append("Uptrend")
     elif not np.isnan(vs_long_pct) and price < ma_short < ma_long:
         flags.append("Downtrend")
-    if r >= 70:
+    if r >= rsi_settings["overbought"]:
         flags.append("Overbought(RSI)")
-    elif r <= 30:
+    elif r <= rsi_settings["oversold"]:
         flags.append("Oversold(RSI)")
     if not np.isnan(vol_ratio) and vol_ratio >= 1.5:
         flags.append("VolumeSurge")
@@ -686,7 +842,14 @@ def run_stock_screen():
         )
 
     rows = []
-    bar = tqdm(TICKERS, desc="Screening", unit="ticker")
+    bar = tqdm(
+        TICKERS,
+        desc="Screening",
+        unit="ticker",
+        mininterval=PROGRESS_CONFIG["update_interval_seconds"],
+        miniters=1,
+        leave=False,
+    )
     for ticker in bar:
         bar.set_description(f"Analyzing {ticker}")
         row = analyze_ticker(ticker, cfg, bench_rets, RATING_SCORES)
@@ -702,12 +865,11 @@ def run_stock_screen():
 
     df = pd.DataFrame(rows).sort_values("final_score", ascending=False).reset_index(drop=True)
 
-    pd.set_option("display.width", 220)
+    pd.set_option("display.width", OUTPUT_CONFIG["display_width"])
     pd.set_option("display.max_columns", None)
     
     print(df.to_string(index=False))
-    stock_csv_name = f"stock_scanner.csv"
-    df.to_csv(stock_csv_name, index=False)
+    df.to_csv(OUTPUT_CONFIG["stock_csv"], index=False)
     return df
 
 
