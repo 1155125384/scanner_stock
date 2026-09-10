@@ -27,7 +27,7 @@ jobs:
         run: |
           pip install webull-python-sdk-core webull-python-sdk-trade webull-python-sdk-mdata requests yfinance pandas numpy tqdm
 
-      - name: Run ETF Script and commit (x10)
+      - name: Run Stock Script and commit (x10)
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
