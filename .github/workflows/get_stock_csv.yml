@@ -31,17 +31,19 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-
+      
           for i in $(seq 1 10); do
             echo "=== Run $i of 10 ==="
+            git fetch origin main
+            git reset --hard origin/main 
+      
             python scanner_stock.py
-
+      
             git add stock_scanner.csv
             if git diff --cached --quiet; then
               echo "No changes to commit on run $i"
             else
               git commit -m "Auto-update ETF list: $(date) (run $i/10)"
-              git pull --rebase origin main
-              git push
+              git push origin HEAD:main || { git fetch origin main && git reset --soft origin/main && git commit -m "Auto-update ETF list: $(date) (run $i/10)" && git push origin HEAD:main; }
             fi
           done
