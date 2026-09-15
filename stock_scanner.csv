@@ -1,18 +1,18 @@
 Ticker,final_score,rating,price,analyst_weighted_score,analyst_number,analyst_strong_buy,analyst_buy,analyst_hold,analyst_sell,analyst_under_perform,technical_score,vs50MA%,vs200MA%,RSI,VolSurge,1D%,1W%,1M%,AnnVol%,MaxDD%,RelStrength_AvgBench,RelStrength_vs_SPY,RelStrength_vs_DJI,RelStrength_vs_SPX,RelStrength_vs_IXIC,Flags
-META,76.26,Strong hold,665.71,85.76,62,47,9,6,0,0,62,4.7,12.7,76.8,1.1,1.9,8.0,15.2,37.1,-34.7,8.9,8.8,8.8,8.9,9.0,"Uptrend, Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
-GOOGL,75.56,Strong hold,349.48,85.27,63,45,13,5,0,0,61,3.3,1.3,82.3,1.77,1.6,3.2,1.7,30.8,-30.1,4.1,4.1,4.0,4.1,4.2,"Overbought(RSI), VolumeSurge, MACD+, BeatingAvgBench, BeatingAllBench"
+META,76.26,Strong hold,665.71,85.76,62,47,9,6,0,0,62,4.7,12.7,76.8,1.1,1.9,8.0,15.2,37.2,-34.7,8.9,8.8,8.8,8.9,9.0,"Uptrend, Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
+GOOGL,75.56,Strong hold,349.48,85.27,63,45,13,5,0,0,61,3.3,1.3,82.3,1.77,1.6,3.2,1.7,30.9,-30.1,4.1,4.1,4.0,4.1,4.2,"Overbought(RSI), VolumeSurge, MACD+, BeatingAvgBench, BeatingAllBench"
 GOOG,74.64,Hold,345.74,85.07,62,44,13,5,0,0,59,3.1,1.0,83.0,1.62,1.5,3.1,1.3,30.4,-29.6,4.0,3.9,3.9,4.0,4.1,"Overbought(RSI), VolumeSurge, MACD+, BeatingAvgBench, BeatingAllBench"
-MSFT,73.17,Hold,505.31,84.62,55,38,14,3,0,0,56,1.4,1.9,74.4,1.3,1.2,2.9,4.7,26.0,-35.6,3.7,3.7,3.6,3.7,3.8,"Uptrend, Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
-TTWO,70.0,Hold,222.94,83.33,29,25,3,0,0,1,50,3.2,-4.1,69.1,0.78,2.3,4.2,-9.0,29.7,-28.6,5.0,5.0,5.0,5.0,5.1,"MACD+, BeatingAvgBench, BeatingAllBench"
-ABBV,67.8,Hold,261.7,75.0,31,17,8,5,0,1,57,2.3,2.5,79.9,1.14,0.3,3.9,4.3,24.9,-24.0,4.7,4.7,4.7,4.7,4.8,"Uptrend, Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
+MSFT,73.17,Hold,505.31,84.62,55,38,14,3,0,0,56,1.4,1.9,74.4,1.3,1.2,2.9,4.7,26.1,-35.6,3.7,3.7,3.6,3.7,3.8,"Uptrend, Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
+TTWO,70.0,Hold,222.94,83.33,29,25,3,0,0,1,50,3.2,-4.1,69.1,0.78,2.3,4.2,-9.0,29.6,-28.6,5.0,5.0,5.0,5.0,5.1,"MACD+, BeatingAvgBench, BeatingAllBench"
+ABBV,67.8,Hold,261.7,75.0,31,17,8,5,0,1,57,2.3,2.5,79.9,1.14,0.3,3.9,4.3,25.0,-24.0,4.7,4.7,4.7,4.7,4.8,"Uptrend, Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
 UBER,67.15,Hold,72.64,79.92,51,33,9,8,1,0,48,-0.8,-3.8,50.7,1.19,1.7,-1.1,-4.5,37.4,-35.0,-0.3,-0.3,-0.3,-0.3,-0.2,"Downtrend, MACD+"
 NFLX,66.69,Hold,80.33,75.82,51,28,7,16,0,0,53,2.5,2.6,90.5,1.25,0.6,5.0,4.5,33.5,-50.1,5.9,5.9,5.8,5.9,6.0,"Uptrend, Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
 AMD,66.35,Hold,493.26,81.92,55,39,5,11,0,0,43,-0.4,2.1,43.2,1.46,1.2,-2.7,-3.7,56.8,-65.5,-1.8,-1.9,-1.9,-1.8,-1.7,-
-APP,65.6,Hold,334.16,77.33,33,20,7,6,0,0,48,5.1,3.6,90.2,1.0,2.4,7.2,5.0,77.2,-59.3,8.0,8.0,8.0,8.1,8.2,"Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
+APP,65.6,Hold,334.16,77.33,33,20,7,6,0,0,48,5.1,3.6,90.2,1.0,2.4,7.2,5.0,77.3,-59.3,8.0,8.0,8.0,8.1,8.2,"Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
 BKNG,65.35,Hold,175.34,79.59,39,26,6,7,0,0,44,-3.5,-13.1,55.4,1.27,-0.7,-3.8,-16.5,30.4,-34.6,-2.9,-3.0,-3.0,-2.9,-2.8,"Downtrend, MACD+"
 BA,62.18,Hold,210.3,76.97,28,18,5,5,0,0,40,0.4,-3.8,70.2,0.6,0.7,-1.3,-7.9,34.4,-49.8,-0.4,-0.5,-0.5,-0.4,-0.3,"Overbought(RSI), MACD+"
-MU,61.79,Hold,924.29,84.32,49,36,9,4,0,0,28,-5.8,-1.9,21.6,1.11,0.7,-9.4,-9.2,61.0,-58.9,-8.5,-8.6,-8.6,-8.5,-8.4,Oversold(RSI)
+MU,61.79,Hold,924.29,84.32,49,36,9,4,0,0,28,-5.8,-1.9,21.6,1.11,0.7,-9.4,-9.2,60.9,-58.9,-8.5,-8.6,-8.6,-8.5,-8.4,Oversold(RSI)
 ORCL,60.58,Hold,144.73,78.3,43,27,8,7,1,0,34,-6.8,-2.9,27.0,1.72,1.6,-11.0,-1.9,49.8,-66.5,-10.1,-10.2,-10.2,-10.1,-10.0,"Oversold(RSI), VolumeSurge"
-AAPL,60.52,Hold,333.05,66.2,44,19,6,13,3,3,52,2.7,5.8,68.6,0.94,-0.0,5.4,9.4,26.2,-33.3,6.2,6.2,6.2,6.2,6.3,"Uptrend, BeatingAvgBench, BeatingAllBench"
-FUTU,57.53,Neutral,111.1,75.89,18,13,3,2,0,0,30,-4.9,-3.0,30.4,0.48,0.1,-6.6,1.8,61.3,-55.3,-5.7,-5.7,-5.8,-5.7,-5.6,MACD+
-LITE,54.25,Neutral,835.22,77.08,26,17,5,4,0,0,20,-9.1,-6.3,12.4,1.29,-2.6,-14.9,-12.9,72.3,-53.8,-14.1,-14.1,-14.1,-14.1,-14.0,Oversold(RSI)
+AAPL,60.52,Hold,333.05,66.2,44,19,6,13,3,3,52,2.7,5.8,68.6,0.94,-0.0,5.4,9.4,26.3,-33.3,6.2,6.2,6.2,6.2,6.3,"Uptrend, BeatingAvgBench, BeatingAllBench"
+FUTU,57.53,Neutral,111.1,75.89,18,13,3,2,0,0,30,-4.9,-3.0,30.4,0.48,0.1,-6.6,1.8,61.4,-55.3,-5.7,-5.7,-5.8,-5.7,-5.6,MACD+
+LITE,54.25,Neutral,835.22,77.08,26,17,5,4,0,0,20,-9.1,-6.3,12.4,1.29,-2.6,-14.9,-12.9,72.2,-53.8,-14.1,-14.1,-14.1,-14.1,-14.0,Oversold(RSI)
