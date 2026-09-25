@@ -1,5 +1,4 @@
 Ticker,final_score,rating,price,analyst_weighted_score,analyst_number,analyst_strong_buy,analyst_buy,analyst_hold,analyst_sell,analyst_under_perform,technical_score,vs50MA%,vs200MA%,RSI,VolSurge,1D%,1W%,1M%,AnnVol%,MaxDD%,RelStrength_AvgBench,RelStrength_vs_SPY,RelStrength_vs_DJI,RelStrength_vs_SPX,RelStrength_vs_IXIC,Flags
-MSFT,79.23,Strong hold,516.1,85.38,55,39,14,2,0,0,70,3.4,4.0,72.8,2.48,0.4,4.4,1.1,26.0,-35.6,4.5,4.5,4.7,4.5,4.3,"Uptrend, Overbought(RSI), VolumeSurge, MACD+, BeatingAvgBench, BeatingAllBench"
 DDOG,74.88,Hold,268.02,80.8,46,31,10,3,1,1,66,8.3,15.0,75.5,1.6,-2.1,11.4,12.0,53.0,-49.5,11.5,11.5,11.7,11.5,11.3,"Uptrend, Overbought(RSI), VolumeSurge, MACD+, BeatingAvgBench, BeatingAllBench"
 META,74.26,Hold,751.9,85.76,62,47,9,6,0,0,57,3.4,19.3,55.7,1.17,-0.0,3.5,30.3,37.3,-34.7,3.6,3.6,3.8,3.6,3.4,"Uptrend, BeatingAvgBench, BeatingAllBench"
 CVS,71.43,Hold,89.13,79.05,27,18,7,2,0,0,60,1.5,-4.2,76.0,2.56,3.4,1.6,-4.6,33.9,-46.9,1.7,1.7,1.9,1.7,1.5,"Overbought(RSI), VolumeSurge, MACD+, BeatingAvgBench, BeatingAllBench"
