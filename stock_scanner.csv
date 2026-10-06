@@ -1,6 +1,6 @@
 Ticker,final_score,rating,price,analyst_weighted_score,analyst_number,analyst_strong_buy,analyst_buy,analyst_hold,analyst_sell,analyst_under_perform,technical_score,vs50MA%,vs200MA%,RSI,VolSurge,1D%,1W%,1M%,AnnVol%,MaxDD%,RelStrength_AvgBench,RelStrength_vs_SPY,RelStrength_vs_DJI,RelStrength_vs_SPX,RelStrength_vs_IXIC,Flags
 NVDA,74.37,Hold,239.11,86.62,61,48,10,2,1,0,56,3.5,6.9,69.1,1.23,0.9,3.8,4.9,44.2,-38.5,2.4,2.3,3.6,2.4,1.3,"Uptrend, MACD+, BeatingAvgBench, BeatingAllBench"
-MSFT,74.17,Hold,525.49,85.61,56,40,14,2,0,0,57,2.0,4.5,72.5,1.35,-0.3,3.3,7.1,26.1,-35.6,1.9,1.8,3.1,1.9,0.8,"Uptrend, Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
+MSFT,74.17,Hold,525.49,85.61,56,40,14,2,0,0,57,2.0,4.5,72.5,1.31,-0.3,3.3,7.1,26.1,-35.6,1.9,1.8,3.1,1.9,0.8,"Uptrend, Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
 AMZN,71.92,Hold,251.51,85.87,59,42,15,2,0,0,51,0.9,-0.8,62.4,1.04,-0.0,1.9,-1.4,32.1,-31.7,0.4,0.3,1.7,0.4,-0.7,"MACD+, BeatingAvgBench"
 GOOG,71.18,Hold,343.83,84.64,60,42,13,5,0,0,51,1.1,1.4,77.1,0.97,0.6,2.2,3.6,30.1,-29.6,0.8,0.7,2.1,0.8,-0.3,"Uptrend, Overbought(RSI), MACD+, BeatingAvgBench"
 GOOGL,70.12,Hold,346.62,84.86,61,43,13,5,0,0,48,1.0,1.2,76.1,0.75,0.4,2.1,3.6,30.5,-30.1,0.7,0.6,1.9,0.6,-0.5,"Uptrend, Overbought(RSI), MACD+, BeatingAvgBench"
