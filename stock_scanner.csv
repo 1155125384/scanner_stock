@@ -1,7 +1,6 @@
 Ticker,final_score,rating,price,analyst_weighted_score,analyst_number,analyst_strong_buy,analyst_buy,analyst_hold,analyst_sell,analyst_under_perform,technical_score,vs50MA%,vs200MA%,RSI,VolSurge,1D%,1W%,1M%,AnnVol%,MaxDD%,RelStrength_AvgBench,RelStrength_vs_SPY,RelStrength_vs_DJI,RelStrength_vs_SPX,RelStrength_vs_IXIC,Flags
 TTWO,72.0,Hold,209.38,83.33,29,25,3,0,0,1,55,2.3,-0.5,71.8,1.24,0.9,3.5,-4.2,29.3,-28.6,3.1,2.9,3.3,2.9,3.5,"Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
 WMT,71.43,Hold,110.59,79.72,43,27,10,5,0,1,59,4.0,3.3,76.9,1.12,0.8,6.2,4.4,22.5,-24.1,5.8,5.5,5.9,5.5,6.1,"Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
-VST,71.34,Hold,156.17,78.23,21,16,4,0,0,1,61,4.7,8.4,40.0,1.81,-6.1,13.5,5.1,54.7,-52.4,13.1,12.9,13.3,12.9,13.5,"Uptrend, VolumeSurge, BeatingAvgBench, BeatingAllBench"
 MSFT,70.22,Hold,522.69,86.36,56,41,14,1,0,0,46,-0.0,3.3,34.3,1.02,-1.4,1.7,5.6,26.1,-35.6,1.3,1.0,1.4,1.0,1.6,"BeatingAvgBench, BeatingAllBench"
 MRVL,70.09,Hold,274.61,83.48,46,33,9,4,0,0,50,0.3,12.1,36.6,1.67,-2.0,-0.2,16.4,64.9,-61.9,-0.6,-0.8,-0.5,-0.8,-0.2,"Uptrend, VolumeSurge"
 WMB,69.94,Hold,72.36,78.57,25,17,6,2,0,0,57,2.6,0.5,49.6,1.57,0.2,3.4,-1.0,24.2,-15.0,3.0,2.7,3.1,2.8,3.3,"VolumeSurge, BeatingAvgBench, BeatingAllBench"
@@ -24,7 +23,7 @@ ANET,67.64,Hold,210.85,82.74,32,24,7,1,0,0,45,0.8,5.3,39.7,1.14,-2.7,2.4,5.6,48.
 SNPS,67.6,Hold,497.84,80.0,25,19,4,2,0,0,49,2.8,17.2,39.4,0.91,-2.3,2.0,24.8,43.4,-43.9,1.6,1.3,1.7,1.4,1.9,"Uptrend, BeatingAvgBench, BeatingAllBench"
 RPM,67.6,Hold,99.4,76.0,15,12,2,1,0,0,55,1.1,-0.9,56.1,1.44,2.8,-0.1,-1.0,26.8,-34.1,-0.5,-0.8,-0.4,-0.7,-0.1,MACD+
 PWR,67.56,Hold,685.34,79.27,31,24,1,5,0,1,50,0.8,6.8,32.7,1.34,-1.1,1.6,5.9,37.7,-36.0,1.2,1.0,1.4,1.0,1.6,"Uptrend, BeatingAvgBench, BeatingAllBench"
-TMO,67.42,Hold,651.77,77.7,27,19,4,3,0,1,52,-1.5,1.5,46.3,1.74,2.3,0.1,7.4,27.3,-37.7,-0.3,-0.6,-0.2,-0.6,0.0,VolumeSurge
+TMO,67.42,Hold,651.77,77.7,27,19,4,3,0,1,52,-1.5,1.5,46.3,1.74,2.3,0.1,7.4,27.4,-37.7,-0.3,-0.6,-0.2,-0.6,0.0,VolumeSurge
 CEG,67.4,Hold,284.97,75.0,22,13,6,3,0,0,56,3.7,4.1,33.0,1.77,-6.7,12.0,-2.1,49.8,-52.3,11.6,11.4,11.7,11.4,12.0,"Uptrend, VolumeSurge, BeatingAvgBench, BeatingAllBench"
 ADI,67.21,Hold,406.14,80.68,34,24,6,4,0,0,47,-0.7,6.8,30.8,1.19,-0.8,-2.6,9.1,33.1,-33.1,-2.9,-3.2,-2.8,-3.2,-2.6,-
 XEL,67.12,Hold,73.38,75.86,19,13,4,2,0,0,54,2.4,0.4,63.8,0.95,0.8,2.7,-2.9,20.0,-24.9,2.3,2.1,2.4,2.1,2.7,"MACD+, BeatingAvgBench, BeatingAllBench"
