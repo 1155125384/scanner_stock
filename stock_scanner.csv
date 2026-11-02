@@ -1,6 +1,5 @@
 Ticker,final_score,rating,price,analyst_weighted_score,analyst_number,analyst_strong_buy,analyst_buy,analyst_hold,analyst_sell,analyst_under_perform,technical_score,vs50MA%,vs200MA%,RSI,VolSurge,1D%,1W%,1M%,AnnVol%,MaxDD%,RelStrength_AvgBench,RelStrength_vs_SPY,RelStrength_vs_DJI,RelStrength_vs_SPX,RelStrength_vs_IXIC,Flags
 BOOT,78.11,Strong hold,137.39,76.85,17,13,3,1,0,0,80,12.8,13.6,70.9,2.38,0.3,21.8,10.2,49.8,-50.6,24.5,24.2,22.6,24.2,26.9,"Uptrend, Overbought(RSI), VolumeSurge, MACD+, BeatingAvgBench, BeatingAllBench"
-CRH,77.27,Strong hold,96.62,78.79,23,16,6,1,0,0,75,9.3,14.6,76.9,1.86,0.9,12.9,16.3,31.1,-40.1,15.6,15.3,13.7,15.3,18.0,"Uptrend, Overbought(RSI), VolumeSurge, MACD+, BeatingAvgBench, BeatingAllBench"
 AMZN,75.64,Strong hold,245.8,86.07,60,43,15,2,0,0,60,-1.1,-2.8,52.5,2.21,-2.8,-3.1,-3.0,32.3,-31.7,-0.5,-0.7,-2.3,-0.7,2.0,"Downtrend, VolumeSurge, MACD+"
 AZO,74.22,Hold,3253.98,77.7,27,18,5,4,0,0,69,2.2,8.5,75.5,2.09,1.6,3.6,12.5,24.9,-36.9,6.2,5.9,4.3,6.0,8.7,"Uptrend, Overbought(RSI), VolumeSurge, MACD+, BeatingAvgBench, BeatingAllBench"
 XEL,73.5,Hold,79.33,75.83,20,14,4,1,0,1,70,1.1,6.6,52.1,3.05,0.5,2.3,10.6,20.1,-24.9,4.9,4.6,3.0,4.7,7.3,"Uptrend, VolumeSurge, BeatingAvgBench, BeatingAllBench"
@@ -18,7 +17,6 @@ TTWO,67.6,Hold,192.1,83.33,29,25,3,0,0,1,44,-3.1,-5.7,44.1,0.97,-0.7,-4.6,-5.5,2
 BA,67.37,Hold,175.41,78.95,28,19,6,3,0,0,50,-0.6,-6.1,63.0,1.37,-0.8,3.1,-7.5,34.8,-49.8,5.7,5.4,3.8,5.4,8.1,"Downtrend, MACD+, BeatingAvgBench, BeatingAllBench"
 GOOG,66.78,Hold,278.1,84.64,60,43,11,6,0,0,40,-8.1,-16.1,42.4,1.63,-2.1,-12.7,-19.0,30.9,-31.3,-10.0,-10.3,-11.9,-10.3,-7.6,"Downtrend, VolumeSurge, MACD+"
 META,65.43,Hold,606.54,84.38,62,46,9,6,1,0,37,-3.0,-13.6,27.8,1.39,-2.0,-3.0,-18.0,37.8,-34.7,-0.4,-0.7,-2.3,-0.6,2.0,"Downtrend, Oversold(RSI)"
-TMO,65.03,Hold,682.65,78.38,27,20,3,3,0,1,45,-1.2,0.9,22.4,1.31,-0.3,-1.5,3.0,27.5,-37.7,1.2,0.9,-0.7,0.9,3.6,"Oversold(RSI), BeatingAvgBench"
 BAC,63.88,Hold,49.56,77.14,25,16,6,3,0,0,44,-2.2,-6.0,19.2,1.55,-1.2,-2.2,-8.8,25.6,-30.2,0.4,0.1,-1.5,0.2,2.8,"Downtrend, Oversold(RSI), VolumeSurge, BeatingAvgBench"
 CDNS,63.65,Hold,329.64,79.41,24,18,4,2,0,0,40,-0.8,-1.4,30.6,1.06,0.3,-4.3,-7.9,35.7,-34.2,-1.7,-2.0,-3.6,-1.9,0.8,Downtrend
 AAPL,62.14,Hold,339.11,65.57,43,18,6,13,3,3,57,-1.8,-0.3,27.8,5.32,-0.4,-2.1,1.7,26.3,-33.3,0.6,0.3,-1.3,0.3,3.0,"Oversold(RSI), VolumeSurge, BeatingAvgBench"
@@ -27,4 +25,4 @@ MCHP,60.63,Hold,76.11,76.39,26,18,2,6,0,0,37,-1.9,-0.9,34.0,1.11,-5.4,-3.5,-6.7,
 MRVL,59.86,Neutral,171.35,83.77,47,34,9,4,0,0,24,-22.5,-31.3,9.9,4.13,-8.7,-29.6,-41.1,65.7,-61.9,-27.0,-27.3,-28.9,-27.2,-24.6,"Downtrend, Oversold(RSI), VolumeSurge"
 AMD,58.75,Neutral,466.7,81.92,55,39,5,11,0,0,24,-12.3,-19.5,9.9,1.88,-8.0,-16.5,-27.8,57.7,-65.5,-13.8,-14.1,-15.7,-14.1,-11.4,"Downtrend, Oversold(RSI), VolumeSurge"
 SNDK,56.26,Neutral,1075.0,76.43,25,17,4,3,0,1,26,-14.7,-28.2,8.1,2.5,-5.9,-18.2,-35.4,93.5,-56.5,-15.6,-15.9,-17.5,-15.8,-13.2,"Downtrend, Oversold(RSI), VolumeSurge"
-STX,53.07,Neutral,593.64,77.78,26,18,4,4,0,0,16,-9.6,-22.0,10.3,0.74,-2.9,-12.8,-27.7,55.1,-46.7,-10.2,-10.5,-12.1,-10.4,-7.8,"Downtrend, Oversold(RSI)"
+STX,53.07,Neutral,593.26,77.78,26,18,4,4,0,0,16,-9.8,-22.2,14.6,0.75,-7.9,-12.6,-33.1,55.1,-46.7,-9.9,-10.2,-11.8,-10.2,-7.5,"Downtrend, Oversold(RSI)"
