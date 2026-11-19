@@ -1,5 +1,4 @@
 Ticker,final_score,rating,price,analyst_weighted_score,analyst_number,analyst_strong_buy,analyst_buy,analyst_hold,analyst_sell,analyst_under_perform,technical_score,vs50MA%,vs200MA%,RSI,VolSurge,1D%,1W%,1M%,AnnVol%,MaxDD%,RelStrength_AvgBench,RelStrength_vs_SPY,RelStrength_vs_DJI,RelStrength_vs_SPX,RelStrength_vs_IXIC,Flags
-TTWO,76.8,Strong hold,216.49,83.33,29,25,3,0,0,1,67,-2.3,3.8,54.4,3.42,-0.3,-4.6,3.5,30.6,-28.6,-0.3,-0.5,0.2,-0.5,-0.5,"VolumeSurge, MACD+"
 DIS,75.19,Strong hold,122.35,77.98,32,22,5,4,1,0,71,2.6,7.5,60.4,2.06,2.3,2.8,8.9,25.9,-33.6,7.0,6.8,7.6,6.8,6.9,"Uptrend, VolumeSurge, MACD+, BeatingAvgBench, BeatingAllBench"
 PANW,73.88,Hold,341.41,78.46,55,33,10,11,1,0,67,5.7,-3.7,72.1,2.45,4.4,5.3,-4.5,42.6,-37.2,9.5,9.3,10.0,9.3,9.3,"Overbought(RSI), VolumeSurge, MACD+, BeatingAvgBench, BeatingAllBench"
 AMZN,72.47,Hold,267.67,86.11,62,45,14,3,0,0,52,1.1,3.8,72.4,0.83,1.1,-0.7,6.3,32.8,-31.7,3.5,3.3,4.1,3.4,3.4,"Uptrend, Overbought(RSI), MACD+, BeatingAvgBench, BeatingAllBench"
